@@ -131,14 +131,14 @@ section.result-box .result {
   width: 100%;
   margin: 0 auto;
   float: left;
-  display: block;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 section.result-box .result .weather-day {
   width: 30%;
-  min-height: 145px;
+  margin-bottom: 10px;
   padding: 10px;
-  margin: 10px;
-  float: left;
   border-radius: 3px;
   background-color: #fff;
   border: 1px solid;
@@ -162,11 +162,11 @@ section.result-box .result .weather-day h3 {
 section.result-box .result-min-max {
   width: 100%;
   margin: 0 auto;
-  padding: 10px;
+  padding: 10px 0;
   float: left;
 }
 section.result-box .result-min-max .temp {
-  width: 49%;
+  width: 49.5%;
   float: left;
   font-size: 16px;
   padding: 10px;
@@ -220,4 +220,4 @@ section.chart-section {
   font-size: 14px;
 }
 
-/*# sourceMappingURL=../style.css.map */
+/*# sourceMappingURL=assets/style.css.map */
