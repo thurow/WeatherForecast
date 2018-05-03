@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,500,700,900");
 * {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -13,9 +14,60 @@
 
 body {
   margin: 0;
-  font-family: Arial, helvetica, sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 62.5%;
-  background-color: #e9ebee;
+  background-color: #f7f7f7;
+}
+
+header {
+  background-color: #0181CC;
+}
+header .main-header {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+@media only screen and (max-width: 455px) {
+  header .main-header {
+    padding: 0;
+  }
+}
+header .main-header h1 {
+  margin: 0;
+  font-size: 30px;
+  text-align: center;
+  color: #fff;
+}
+@media only screen and (max-width: 455px) {
+  header .main-header h1 {
+    font-size: 22px;
+  }
+}
+@media only screen and (max-width: 414px) {
+  header .main-header h1 {
+    font-size: 20px;
+  }
+}
+@media only screen and (max-width: 375px) {
+  header .main-header h1 {
+    font-size: 18px;
+  }
+}
+header .main-header .logo {
+  width: 10%;
+}
+@media only screen and (max-width: 455px) {
+  header .main-header .logo {
+    margin-left: 20px;
+  }
+}
+header .main-header .logo svg {
+  height: 110px;
+}
+@media only screen and (max-width: 414px) {
+  header .main-header .logo svg {
+    height: 85px;
+  }
 }
 
 section {
@@ -28,23 +80,11 @@ section h2 {
   text-align: center;
   margin-top: 0px;
   font-size: 22px;
-  color: #3b5998;
+  color: #00659d;
 }
 @media only screen and (max-width: 455px) {
   section h2 {
     font-size: 18px;
-  }
-}
-section header {
-  text-align: center;
-}
-section header h1 {
-  font-size: 26px;
-  color: #3b5998;
-}
-@media only screen and (max-width: 455px) {
-  section header h1 {
-    font-size: 22px;
   }
 }
 section article {
@@ -106,7 +146,7 @@ section #main .button-section legend {
 section #main .button-section button {
   margin-top: 10px;
   width: 98.5%;
-  background-color: #3b5998;
+  background-color: #00659d;
   border: none;
   border-radius: 3px;
   color: white;
@@ -155,8 +195,13 @@ section.result-box .result .weather-day h3 {
 }
 @media only screen and (max-width: 455px) {
   section.result-box .result .weather-day {
-    width: 95%;
+    width: 48%;
     min-height: inherit;
+  }
+}
+@media only screen and (max-width: 375px) {
+  section.result-box .result .weather-day {
+    width: 100%;
   }
 }
 section.result-box .result-min-max {
@@ -202,8 +247,37 @@ section.result-box .result-min-max .temp-max {
     width: 100%;
   }
 }
+@media only screen and (max-width: 455px) {
+  section.result-today {
+    padding-top: 0;
+  }
+}
+@media only screen and (max-width: 455px) {
+  section.result-today h2 {
+    margin-bottom: 0;
+  }
+}
 section.result-today .result {
   display: flex;
+}
+@media only screen and (max-width: 455px) {
+  section.result-today .result {
+    flex-direction: column;
+  }
+}
+section.result-today .result .text_row {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+section.result-today .result .text_row p {
+  margin: 0;
+  font-size: 14px;
+}
+@media only screen and (max-width: 455px) {
+  section.result-today .result figure {
+    text-align: center;
+  }
 }
 
 .chart {

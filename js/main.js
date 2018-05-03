@@ -65,9 +65,9 @@ function cleanDivs()
 {
     $(".result-box .result").html("");
     $(".result-min-max").html("");
-    $(".result-today > .result > #message").html("");
-    $(".result-today > .result > #temperature").html("");
-    $(".result-today > .result > #recomendation").html("");
+    $(".result-today > .result > .text_row > #message").html("");
+    $(".result-today > .result > .text_row > #temperature").html("");
+    $(".result-today > .result > .text_row > #recomendation").html("");
     $(".result-today > .result > figure").html("");
     $(".chart").html("<canvas id='chart-temperatures'></canvas>");
 }
@@ -82,7 +82,6 @@ function getCityId(city) {
             alert('Não foi possível localizar a preisão desta cidade.');
             return false;
         }
-        console.log(result);
         if (!result.error) {
             getWeatherResultAdv(result[0].id)
         } else {
@@ -92,40 +91,25 @@ function getCityId(city) {
             console.log(result.detail);
         }
     });
-    // var geocoder =  new google.maps.Geocoder();
-    // geocoder.geocode(
-    //     {'address': city +', br'}, function(results, status) {
-    //       if (status == google.maps.GeocoderStatus.OK) {
-    //         var location = results[0].geometry.location
-    //         var latitude = location.lat();
-    //         var longitude = location.lng();
-    //         getWeatherResult(latitude,longitude);
-    //       } else {
-    //         $('#previsao').removeClass("button-disabled");
-    //         $('legend').hide();
-    //       }
-    // });
 }
 
 function getWeatherResultAdv(cityId) {
     var url = "http://apiadvisor.climatempo.com.br/api/v1/forecast/locale/"+cityId+"/days/15?token=2a086ed2a84226dbc364606b1924558d";
     $.getJSON(url, function(response){
         if (!response.error) {
-            console.log(response);
             tempMin = new Array();
             tempMax = new Array();
             $(".result-box .result").html("");
             $(".result-min-max").html("");
             $.each(response.data, function(index, value){
-                console.log(value.rain.probability);
                 if (index == 0) {
                     getTodayWeather(value);
                     return true;
                 }
                 var result = getWeatherCustomResult(value);
                 $(".result-box .result").append("<div class='weather-day'><h3>"+ result.date+ " - " + result.dayOfWeek + "</h3>" + 
-                    result.description + "<br />" + "Mínima do dia: " + Math.round(result.tempMinDay) + " ºC<br />" + 
-                    "Máxima do dia: " + Math.round(result.tempMaxDay) + " ºC </div>");
+                    result.description + "<br />" + "Mínima: " + Math.round(result.tempMinDay) + " ºC<br />" + 
+                    "Máxima: " + Math.round(result.tempMaxDay) + " ºC </div>");
             });
             $(".result-min-max").append("<div class='temp temp-min'>Temperatura Mínima da semana: "+ Math.round(getMinTemperature(tempMin)) + 
                 " ºC</div>");
@@ -145,52 +129,11 @@ function getWeatherResultAdv(cityId) {
 }
 
 function getTodayWeather(value) {
-    $(".result-today > .result > #message").text(value.text_icon.text.phrase.reduced);
-    $(".result-today > .result > #temperature").text("Hoje temos a máxima de "+ value.temperature.max + "°C e a mínima de " 
-        + value.temperature.min + "°C;.");
-    $(".result-today > .result > #recomendation").text(getRecomendacao(value));
+    $(".result-today > .result > .text_row > #message").text(value.text_icon.text.phrase.reduced);
+    $(".result-today > .result > .text_row > #temperature").text("Hoje temos a máxima de "+ value.temperature.max + "°C e a mínima de " 
+        + value.temperature.min + "°C.");
+    $(".result-today > .result > .text_row > #recomendation").text(getRecomendacao(value));
     $(".result-today > .result figure").html("<img src='images/"+value.text_icon.icon.afternoon+".png' />")
-    console.log(value.text_icon.text.phrase);
-}
-
-function getWeatherResult(latitude,longitude)  {
-    var settings = {
-          "async": true,
-          "crossDomain": true,
-          "url": 'http://api.openweathermap.org/data/2.5/forecast/daily?lat='+latitude+'&lon='+longitude+'&appid=d7e6060865ccce37a26227bef299cbe0&units=metric&lang=pt',
-          "method": "GET",
-          "dataType": "jsonp",
-          "headers": {
-            "authorization": "Basic YWRtaW46cGFzc3dvcmQ=",
-            "cache-control": "no-cache",
-            "postman-token": "54733c33-4918-811b-3987-69d6edeaa3a0"
-          }
-        }
-    $.ajax(settings).done(function (response) {
-        if (response.cod == '200') {
-            tempMin = new Array();
-            tempMax = new Array();
-            $(".result").html("");
-            $(".result-min-max").html("");
-            $.each(response.list, function(index, value){
-                var result = getWeatherCustomResult(value);
-                $(".result").append("<div class='weather-day'><h3>"+ result.date+ " - " + result.dayOfWeek + "</h3>" + 
-                    result.description + "<br />" + "Mínima do dia: " + Math.round(result.tempMinDay) + " ºC<br />" + 
-                    "Máxima do dia: " + Math.round(result.tempMaxDay) + " ºC </div>");
-            });
-            $(".result-min-max").append("<div class='temp temp-min'>Temperatura Mínima da semana: "+ Math.round(getMinTemperature(tempMin)) + 
-                " ºC</div>");
-            $(".result-min-max").append("<div class='temp temp-max'>Temperatura Máxima da semana: "+ Math.round(getMaxTemperature(tempMax)) + 
-                " ºC</div>");
-            getChart(response.list);
-            $('#previsao').removeClass("button-disabled");
-            $('legend').hide();
-        } else {
-            $('#previsao').removeClass("button-disabled");
-            $('legend').hide();
-            alert('Ocorreu algum erro na consulta.')
-        }
-    });
 }
 
 function getChart(list) {
@@ -252,11 +195,6 @@ function getWeatherCustomResult(value) {
     return result;
 }
 
-function getDescriptionOfWeatherDay(value) {
-    return value.description;
-}
-
-/** continue customizing */
 function getRecomendacao(value) {
     var tempDay = value.temperature.afternoon;
     var estimateRain = value.rain.probability ? value.rain.probability : 0;
@@ -288,12 +226,6 @@ function getDayOfWeek(value) {
     return days[jsDate.getDay()];
 }
 
-function getDayOfWeather(value)
-{
-    jsDate = new Date(value * 1000);
-    return jsDate.getDate() + '/' + (jsDate.getMonth()+1) + '/' + jsDate.getFullYear();
-}
-
 $(function(){
     $("#favorite").prop('checked', false);
     var favoriteLocation = store.get('favoriteLocation');
@@ -323,6 +255,7 @@ $("#previsao").on("click", function() {
     if (city) {
         if ($("#favorite").is(":checked")) {
             setFavoriteLocation();
+            $("#favorite").prop("checked",false);
         }
         getCityId(city);
     } else {

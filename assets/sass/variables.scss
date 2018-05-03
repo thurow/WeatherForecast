@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700,900');
+
+$font-family: 'Roboto', sans-serif;
 $font-size: 14px;
 $font-size-h: 16px;
 $font-size-hh: 22px;
@@ -5,6 +8,9 @@ $font-size-hh: 22px;
 $max-width-tablet: 768px;
 $max-width-tablet-custom: 660px;
 $max-width-cell-custom: 455px;
+$max-width-cell-iphone: 414px;
+$max-width-cell-iphone-lower: 375px;
 
 $color-white: #fff;
-$main-color: #3b5998;
+$main-color: #00659d;
+$bg-header:#0181CC;

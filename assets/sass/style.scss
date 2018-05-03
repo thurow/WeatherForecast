@@ -1,5 +1,43 @@
-@import "reset";
 @import "variables";
+@import "reset";
+header {
+    background-color:$bg-header;
+    .main-header {
+        display:flex;
+        align-items:center;
+        text-align: center;
+        @media only screen and (max-width: $max-width-cell-custom) {
+            padding:0;
+        }
+        h1 {
+            margin:0;
+            font-size:30px;
+            text-align:center;
+            color:$color-white;
+            @media only screen and (max-width: $max-width-cell-custom) {
+                font-size: $font-size-hh;
+            }
+            @media only screen and (max-width: $max-width-cell-iphone) {
+                font-size:20px;
+            }
+            @media only screen and (max-width: $max-width-cell-iphone-lower) {
+                font-size:18px;
+            }
+        }
+        .logo {
+            width: 10%;
+            @media only screen and (max-width: $max-width-cell-custom) {
+                margin-left: 20px;
+            }
+            svg {
+                height:110px;
+                @media only screen and (max-width: $max-width-cell-iphone) {
+                    height:85px;
+                }
+            }
+        }
+    }
+}
 section {
     width: 750px;
     padding: 15px;
@@ -12,16 +50,6 @@ section {
         color:$main-color;
         @media only screen and (max-width: $max-width-cell-custom) {
             font-size: 18px;
-        }
-    }
-    header {
-        text-align: center;
-         h1 {
-            font-size: 26px;
-            color:$main-color;
-            @media only screen and (max-width: $max-width-cell-custom) {
-                font-size: $font-size-hh;
-            }
         }
     }
     article {
@@ -120,8 +148,11 @@ section {
                     width: 45%;
                 }
                 @media only screen and (max-width: $max-width-cell-custom) {
-                    width: 95%;
+                    width: 48%;
                     min-height: inherit;
+                }
+                @media only screen and (max-width: $max-width-cell-iphone-lower) {
+                    width: 100%;
                 }
             }
         }
@@ -162,8 +193,33 @@ section {
         width: 100%;
     }
     &.result-today {
+        @media only screen and (max-width: $max-width-cell-custom) {
+            padding-top:0;
+        }
+        h2 {
+            @media only screen and (max-width: $max-width-cell-custom) {
+                margin-bottom:0;
+            }
+        }
         .result {
             display:flex;
+            @media only screen and (max-width: $max-width-cell-custom) {
+                flex-direction:column;
+            }
+            .text_row {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-evenly;
+                p {
+                    margin: 0;
+                    font-size:$font-size;
+                }
+            }
+            figure {
+                @media only screen and (max-width: $max-width-cell-custom) {
+                    text-align:center;
+                }
+            }
         }
     }
 }
