@@ -197,14 +197,13 @@ section.result-box .result-min-max .temp-max {
     margin-left: 0;
   }
 }
-section.chart-section {
-  padding-right: 30px;
-  padding-left: 25px;
-}
 @media only screen and (max-width: 768px) {
   section {
     width: 100%;
   }
+}
+section.result-today .result {
+  display: flex;
 }
 
 .chart {

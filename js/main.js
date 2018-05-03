@@ -61,12 +61,34 @@ function isMsie() {
     return false;
 }
 
+function cleanDivs()
+{
+    $(".result-box .result").html("");
+    $(".result-min-max").html("");
+    $(".result-today > .result > #message").html("");
+    $(".result-today > .result > #temperature").html("");
+    $(".result-today > .result > #recomendation").html("");
+    $(".result-today > .result > figure").html("");
+    $(".chart").html("<canvas id='chart-temperatures'></canvas>");
+}
+
 function getCityId(city) {
     var url = "http://apiadvisor.climatempo.com.br/api/v1/locale/city?name=" + city + "&token=2a086ed2a84226dbc364606b1924558d";
     $.getJSON(url, function(result){
+        if ($.isEmptyObject(result)) {
+            cleanDivs();
+            $('#previsao').removeClass("button-disabled");
+            $('legend').hide();
+            alert('Não foi possível localizar a preisão desta cidade.');
+            return false;
+        }
+        console.log(result);
         if (!result.error) {
             getWeatherResultAdv(result[0].id)
         } else {
+            cleanDivs();
+            $('#previsao').removeClass("button-disabled");
+            $('legend').hide();
             console.log(result.detail);
         }
     });
@@ -92,14 +114,18 @@ function getWeatherResultAdv(cityId) {
             console.log(response);
             tempMin = new Array();
             tempMax = new Array();
-            $(".result").html("");
+            $(".result-box .result").html("");
             $(".result-min-max").html("");
             $.each(response.data, function(index, value){
                 console.log(value.rain.probability);
+                if (index == 0) {
+                    getTodayWeather(value);
+                    return true;
+                }
                 var result = getWeatherCustomResult(value);
-                $(".result").append("<div class='weather-day'><h3>"+ result.date+ " - " + result.dayOfWeek + "</h3>" + 
+                $(".result-box .result").append("<div class='weather-day'><h3>"+ result.date+ " - " + result.dayOfWeek + "</h3>" + 
                     result.description + "<br />" + "Mínima do dia: " + Math.round(result.tempMinDay) + " ºC<br />" + 
-                    "Máxima do dia: " + Math.round(result.tempMaxDay) + " ºC" + "<br />" + result.recomenda + "</div>");
+                    "Máxima do dia: " + Math.round(result.tempMaxDay) + " ºC </div>");
             });
             $(".result-min-max").append("<div class='temp temp-min'>Temperatura Mínima da semana: "+ Math.round(getMinTemperature(tempMin)) + 
                 " ºC</div>");
@@ -109,12 +135,22 @@ function getWeatherResultAdv(cityId) {
             $('#previsao').removeClass("button-disabled");
             $('legend').hide();
         } else {
+            cleanDivs();
             console.log(response.detail);
             $('#previsao').removeClass("button-disabled");
             $('legend').hide();
             alert('Ocorreu algum erro na consulta.')
         }
     });
+}
+
+function getTodayWeather(value) {
+    $(".result-today > .result > #message").text(value.text_icon.text.phrase.reduced);
+    $(".result-today > .result > #temperature").text("Hoje temos a máxima de "+ value.temperature.max + "°C e a mínima de " 
+        + value.temperature.min + "°C;.");
+    $(".result-today > .result > #recomendation").text(getRecomendacao(value));
+    $(".result-today > .result figure").html("<img src='images/"+value.text_icon.icon.afternoon+".png' />")
+    console.log(value.text_icon.text.phrase);
 }
 
 function getWeatherResult(latitude,longitude)  {
@@ -140,7 +176,7 @@ function getWeatherResult(latitude,longitude)  {
                 var result = getWeatherCustomResult(value);
                 $(".result").append("<div class='weather-day'><h3>"+ result.date+ " - " + result.dayOfWeek + "</h3>" + 
                     result.description + "<br />" + "Mínima do dia: " + Math.round(result.tempMinDay) + " ºC<br />" + 
-                    "Máxima do dia: " + Math.round(result.tempMaxDay) + " ºC" + "<br />" + result.recomenda + "</div>");
+                    "Máxima do dia: " + Math.round(result.tempMaxDay) + " ºC </div>");
             });
             $(".result-min-max").append("<div class='temp temp-min'>Temperatura Mínima da semana: "+ Math.round(getMinTemperature(tempMin)) + 
                 " ºC</div>");
@@ -211,8 +247,7 @@ function getWeatherCustomResult(value) {
         dayOfWeek: getDayOfWeek(value.date),
         description: value.text_icon.text.pt,
         tempMinDay: value.temperature.min,
-        tempMaxDay: value.temperature.max,
-        recomenda: getRecomendacao(value)
+        tempMaxDay: value.temperature.max
     }
     return result;
 }
