@@ -61,19 +61,38 @@ function isMsie() {
     return false;
 }
 
-function getLocationLatLong(city) {
-    var geocoder =  new google.maps.Geocoder();
-    geocoder.geocode(
-        {'address': city +', br'}, function(results, status) {
-          if (status == google.maps.GeocoderStatus.OK) {
-            var location = results[0].geometry.location
-            var latitude = location.lat();
-            var longitude = location.lng();
-            getWeatherResult(latitude,longitude);
-          } else {
-            $('#previsao').removeClass("button-disabled");
-            $('legend').hide();
-          }
+function getCityId(city) {
+    var url = "http://apiadvisor.climatempo.com.br/api/v1/locale/city?name=" + city + "&token=2a086ed2a84226dbc364606b1924558d";
+    $.getJSON(url, function(result){
+        if (!result.error) {
+            getWeatherResultAdv(result[0].id)
+        } else {
+            console.log(result.detail);
+        }
+    });
+    // var geocoder =  new google.maps.Geocoder();
+    // geocoder.geocode(
+    //     {'address': city +', br'}, function(results, status) {
+    //       if (status == google.maps.GeocoderStatus.OK) {
+    //         var location = results[0].geometry.location
+    //         var latitude = location.lat();
+    //         var longitude = location.lng();
+    //         getWeatherResult(latitude,longitude);
+    //       } else {
+    //         $('#previsao').removeClass("button-disabled");
+    //         $('legend').hide();
+    //       }
+    // });
+}
+
+function getWeatherResultAdv(cityId) {
+    var url = "http://apiadvisor.climatempo.com.br/api/v1/forecast/locale/"+cityId+"/days/15?token=2a086ed2a84226dbc364606b1924558d";
+    $.getJSON(url, function(result){
+        if (!result.error) {
+            console.log(result);
+        } else {
+            console.log(result.detail);
+        }
     });
 }
 
@@ -166,7 +185,7 @@ function getMaxTemperature(temp) {
 String.prototype.capitalize = function() {
     return this.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
 };
-
+/** continue customizing */
 function getWeatherCustomResult(value) {
     tempMin.push(value.temp.min);
     tempMax.push(value.temp.max);
@@ -208,7 +227,7 @@ function setFavoriteLocation() {
 }
 
 function getDayOfWeek(value) {
-    jsDate = new Date(value * 1000);
+    jsDate = new Date(value);
     var days = ["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
     return days[jsDate.getDay()];
 }
@@ -249,7 +268,7 @@ $("#previsao").on("click", function() {
         if ($("#favorite").is(":checked")) {
             setFavoriteLocation();
         }
-        getLocationLatLong(city);
+        getCityId(city);
     } else {
         alert('Você deve informar uma cidade para gerar a previsão!');
         $(this).removeClass("button-disabled");
