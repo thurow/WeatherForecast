@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Desafio Senior - Alexandre Frederico Thurow</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="js/Chart.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/cidades-estados-1.4-utf8.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+</head>
+<body>
+    <section>
+        <header>
+            <h1>Consulta de Previsão do tempo</h1>
+        </header>
+        <div id="main">
+            <article>
+                <div class="inputs">
+                    <div class="input-box box1">
+                        <select name="estados" id="estados"></select>
+                    </div>
+                    <div class="input-box box2">
+                        <select name="cidades" id="cidades"></select>
+                    </div>
+                </div>
+                <div class="save-favorite">
+                    <input type="checkbox" name="favorite" id="favorite" />
+                    <label for="favorite">Salvar como favorito</label>
+                </div>
+                <div class="button-section">
+                    <button id="previsao">Consultar</button>
+                    <legend>Carregando previsão... </legend>
+                </div>
+            </article>
+        </div>
+    </section>
+    <section class="result-box">
+        <h2>Previsão para a Semana</h2>
+        <div class="result"></div>
+        <div class="result-min-max"></div>
+    </section>
+    <section class="chart-section">
+        <h2>Gráfico da Variação de Temperatura (ºC)</h2>
+        <div class="chart">
+            <canvas id="chart-temperatures"></canvas>
+        </div>
+    </section>
+    <script type="text/javascript">
+        $(function(){
+            $("#favorite").prop('checked', false);
+            var favoriteLocation = store.get('favoriteLocation');
+            if (favoriteLocation) {
+                var locationFavorite = JSON.parse(favoriteLocation);
+                new dgCidadesEstados({
+                  cidade: document.getElementById('cidades'),
+                  estado: document.getElementById('estados'),
+                  estadoVal: locationFavorite.state,
+                  cidadeVal: locationFavorite.city
+                });
+            } else {
+                new dgCidadesEstados({
+                  cidade: document.getElementById('cidades'),
+                  estado: document.getElementById('estados'),
+                  estadoVal: 'SC',
+                  cidadeVal: 'Blumenau'
+                });
+            }
+            $("#previsao").click();
+        });
+
+        $("#previsao").on("click", function() {
+            $(this).addClass("button-disabled");
+            $('legend').show();
+            var city = $("#cidades").val();
+            if (city) {
+                if ($("#favorite").is(":checked")) {
+                    setFavoriteLocation();
+                }
+                getLocationLatLong(city);
+            } else {
+                alert('Você deve informar uma cidade para gerar a previsão!');
+                $(this).removeClass("button-disabled");
+                $('legend').hide();
+            }
+        });
+    </script>
+</body>
+</html>
