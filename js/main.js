@@ -87,11 +87,32 @@ function getCityId(city) {
 
 function getWeatherResultAdv(cityId) {
     var url = "http://apiadvisor.climatempo.com.br/api/v1/forecast/locale/"+cityId+"/days/15?token=2a086ed2a84226dbc364606b1924558d";
-    $.getJSON(url, function(result){
-        if (!result.error) {
-            console.log(result);
+    $.getJSON(url, function(response){
+        if (!response.error) {
+            console.log(response);
+            tempMin = new Array();
+            tempMax = new Array();
+            $(".result").html("");
+            $(".result-min-max").html("");
+            $.each(response.data, function(index, value){
+                console.log(value.rain.probability);
+                var result = getWeatherCustomResult(value);
+                $(".result").append("<div class='weather-day'><h3>"+ result.date+ " - " + result.dayOfWeek + "</h3>" + 
+                    result.description + "<br />" + "Mínima do dia: " + Math.round(result.tempMinDay) + " ºC<br />" + 
+                    "Máxima do dia: " + Math.round(result.tempMaxDay) + " ºC" + "<br />" + result.recomenda + "</div>");
+            });
+            $(".result-min-max").append("<div class='temp temp-min'>Temperatura Mínima da semana: "+ Math.round(getMinTemperature(tempMin)) + 
+                " ºC</div>");
+            $(".result-min-max").append("<div class='temp temp-max'>Temperatura Máxima da semana: "+ Math.round(getMaxTemperature(tempMax)) + 
+                " ºC</div>");
+            getChart(response.data);
+            $('#previsao').removeClass("button-disabled");
+            $('legend').hide();
         } else {
-            console.log(result.detail);
+            console.log(response.detail);
+            $('#previsao').removeClass("button-disabled");
+            $('legend').hide();
+            alert('Ocorreu algum erro na consulta.')
         }
     });
 }
@@ -182,19 +203,15 @@ function getMaxTemperature(temp) {
     return Math.max.apply(null, temp);
 }
 
-String.prototype.capitalize = function() {
-    return this.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
-};
-/** continue customizing */
 function getWeatherCustomResult(value) {
-    tempMin.push(value.temp.min);
-    tempMax.push(value.temp.max);
+    tempMin.push(value.temperature.min);
+    tempMax.push(value.temperature.max);
     var result = {
-        date : getDayOfWeather(value.dt),
-        dayOfWeek: getDayOfWeek(value.dt),
-        description: getDescriptionOfWeatherDay(value.weather[0]).capitalize(),
-        tempMinDay: value.temp.min,
-        tempMaxDay: value.temp.max,
+        date : value.date_br,
+        dayOfWeek: getDayOfWeek(value.date),
+        description: value.text_icon.text.pt,
+        tempMinDay: value.temperature.min,
+        tempMaxDay: value.temperature.max,
         recomenda: getRecomendacao(value)
     }
     return result;
@@ -204,18 +221,22 @@ function getDescriptionOfWeatherDay(value) {
     return value.description;
 }
 
+/** continue customizing */
 function getRecomendacao(value) {
-    var tempDay = value.temp.day;
-    var estimateRain = value.rain ? value.rain : 0;
-    var dayOfWeek = getDayOfWeek(value.dt);
-    if (dayOfWeek == "Sábado" || dayOfWeek == "Domingo") {
-        if (tempDay > 25 && estimateRain < 70) {
+    var tempDay = value.temperature.afternoon;
+    var estimateRain = value.rain.probability ? value.rain.probability : 0;
+    var dayOfWeek = getDayOfWeek(value.date);
+    if (tempDay > 25 && estimateRain < 70) {
+        if (dayOfWeek == "Sábado" || dayOfWeek == "Domingo") {
             return 'Um bom dia para ir para Praia, aproveite!'
-        } else {
+        }
+        return "Hoje não vai chover e vai ser quente, vista algo confortável."
+    } else {
+        if (dayOfWeek == "Sábado" || dayOfWeek == "Domingo") {
             return 'Um bom dia para ficar em casa assistindo filmes!'
         }
+        return "É provável que hoje chova, leve uma sombrinha para o trabalho!"
     }
-    return '';
 }
 
 function setFavoriteLocation() {
@@ -228,7 +249,7 @@ function setFavoriteLocation() {
 
 function getDayOfWeek(value) {
     jsDate = new Date(value);
-    var days = ["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
+    var days = ["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"];
     return days[jsDate.getDay()];
 }
 
