@@ -64,7 +64,7 @@ function isMsie() {
 function getLocationLatLong(city) {
     var geocoder =  new google.maps.Geocoder();
     geocoder.geocode(
-        {'address': encodeURIComponent(city) +', br'}, function(results, status) {
+        {'address': city +', br'}, function(results, status) {
           if (status == google.maps.GeocoderStatus.OK) {
             var location = results[0].geometry.location
             var latitude = location.lat();
@@ -218,3 +218,41 @@ function getDayOfWeather(value)
     jsDate = new Date(value * 1000);
     return jsDate.getDate() + '/' + (jsDate.getMonth()+1) + '/' + jsDate.getFullYear();
 }
+
+$(function(){
+    $("#favorite").prop('checked', false);
+    var favoriteLocation = store.get('favoriteLocation');
+    if (favoriteLocation) {
+        var locationFavorite = JSON.parse(favoriteLocation);
+        new dgCidadesEstados({
+          cidade: document.getElementById('cidades'),
+          estado: document.getElementById('estados'),
+          estadoVal: locationFavorite.state,
+          cidadeVal: locationFavorite.city
+        });
+    } else {
+        new dgCidadesEstados({
+          cidade: document.getElementById('cidades'),
+          estado: document.getElementById('estados'),
+          estadoVal: 'SC',
+          cidadeVal: 'Blumenau'
+        });
+    }
+    $("#previsao").click();
+});
+
+$("#previsao").on("click", function() {
+    $(this).addClass("button-disabled");
+    $('legend').show();
+    var city = $("#cidades").val();
+    if (city) {
+        if ($("#favorite").is(":checked")) {
+            setFavoriteLocation();
+        }
+        getLocationLatLong(city);
+    } else {
+        alert('Você deve informar uma cidade para gerar a previsão!');
+        $(this).removeClass("button-disabled");
+        $('legend').hide();
+    }
+});

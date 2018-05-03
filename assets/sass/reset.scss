@@ -1,0 +1,18 @@
+* {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, helvetica, sans-serif;
+    font-size: 62.5%;
+    background-color: #e9ebee;
+}

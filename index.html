@@ -5,12 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
-    <script type="text/javascript" src="js/Chart.min.js"></script>
-    <script type="text/javascript" src="js/main.js"></script>
-    <script type="text/javascript" src="js/cidades-estados-1.4-utf8.js"></script>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <link rel="stylesheet" type="text/css" href="assets/style.css" />
 </head>
 <body>
     <section>
@@ -49,44 +44,10 @@
             <canvas id="chart-temperatures"></canvas>
         </div>
     </section>
-    <script type="text/javascript">
-        $(function(){
-            $("#favorite").prop('checked', false);
-            var favoriteLocation = store.get('favoriteLocation');
-            if (favoriteLocation) {
-                var locationFavorite = JSON.parse(favoriteLocation);
-                new dgCidadesEstados({
-                  cidade: document.getElementById('cidades'),
-                  estado: document.getElementById('estados'),
-                  estadoVal: locationFavorite.state,
-                  cidadeVal: locationFavorite.city
-                });
-            } else {
-                new dgCidadesEstados({
-                  cidade: document.getElementById('cidades'),
-                  estado: document.getElementById('estados'),
-                  estadoVal: 'SC',
-                  cidadeVal: 'Blumenau'
-                });
-            }
-            $("#previsao").click();
-        });
-
-        $("#previsao").on("click", function() {
-            $(this).addClass("button-disabled");
-            $('legend').show();
-            var city = $("#cidades").val();
-            if (city) {
-                if ($("#favorite").is(":checked")) {
-                    setFavoriteLocation();
-                }
-                getLocationLatLong(city);
-            } else {
-                alert('Você deve informar uma cidade para gerar a previsão!');
-                $(this).removeClass("button-disabled");
-                $('legend').hide();
-            }
-        });
-    </script>
+    <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="js/Chart.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/cidades-estados-1.4-utf8.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 </body>
 </html>
